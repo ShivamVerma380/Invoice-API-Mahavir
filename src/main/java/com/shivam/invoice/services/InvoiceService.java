@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.shivam.invoice.helper.GeneratePdf;
 import com.shivam.invoice.helper.ResponseMessage;
 
 @Component
@@ -13,10 +14,12 @@ public class InvoiceService {
     @Autowired
     public ResponseMessage responseMessage;
 
-    public ResponseEntity<?> sendInvoice(){
+    @Autowired
+    public GeneratePdf generatePdf;
+
+    public ResponseEntity<?> sendInvoice(String name){
         try {
-            responseMessage.setMessage("Invoice Sent successfully");
-            return ResponseEntity.status(HttpStatus.OK).body(responseMessage);
+            return generatePdf.generateInvoice(name);
         } catch (Exception e) {
             e.printStackTrace();
             responseMessage.setMessage(e.getMessage());
