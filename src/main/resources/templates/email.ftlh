@@ -25,6 +25,29 @@
             </tr>                        
         </table> 
         <br/>
+        <table border="1" cellspacing="0" cellpadding="1" style="width:100%">
+            <tr class="tableHeader">
+                <td>Sr No.</td>
+                <td>Products Details</td>
+                <td>HSN Code</td>
+                <td>GST</td>
+                <td>QTY</td>
+                <td>Rate</td>
+                <td>Amount</td>
+            </tr>
+            <#foreach product in user.products>                  
+                <tr class="tableBody" style="width:100%">
+                    <td>1</td>
+                    <td>${product.name}<br/>Serial Nos:${product.serialNos}<br/>Sales Person:${product.salesPerson}<br/>Delivery Type:${product.deliveryType}<br/>Del Date:${product.deliveryDate}<br/> Transporter Name:${product.transporterName}<br/>Mobile Number:${product.mobileNumber}</td>
+                    <td>${product.hsnCode}</td>
+                    <td>${product.gst}</td>
+                    <td>${product.quantity}</td>
+                    <td>${product.rate}</td>
+                    <td>${product.amount}</td>
+                </tr>
+            </#foreach>                             
+        </table>
+        <br/>
         <img src="https://i.ibb.co/WymynFj/Screenshot-2022-11-13-150654.png" style="width:100%"></img>
     </div>
 </html> 
