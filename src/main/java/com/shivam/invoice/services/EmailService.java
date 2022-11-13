@@ -48,23 +48,25 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public ResponseEntity<?> sendEmail(UserInfo user) throws MessagingException, IOException, TemplateException {
+    public ResponseEntity<?> sendEmail(UserInfo[] userList) throws MessagingException, IOException, TemplateException {
         try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-            helper.setSubject("Mahavir Invoice");
-            helper.setTo(user.getEmail());
-            String emailContent = getEmailContent(user);
-            helper.setText(emailContent, true);
-            // File file = new File(emailContent);
-            // // Byte
-            // // helper.addAttachment(emailContent,null);
-            // helper.addAttachment("invoice",file);
-            // Session session = Session.getInstance(propert, null)
+            for(UserInfo user: userList){
+                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+                helper.setSubject("Mahavir Invoice");
+                helper.setTo(user.getEmail());
+                String emailContent = getEmailContent(user);
+                helper.setText(emailContent, true);
+                // File file = new File(emailContent);
+                // // Byte
+                // // helper.addAttachment(emailContent,null);
+                // helper.addAttachment("invoice",file);
+                // Session session = Session.getInstance(propert, null)
 
-            
+                
 
-            javaMailSender.send(mimeMessage);
+                javaMailSender.send(mimeMessage);
+            }
 
 
             responseMessage.setMessage("Email Sent");

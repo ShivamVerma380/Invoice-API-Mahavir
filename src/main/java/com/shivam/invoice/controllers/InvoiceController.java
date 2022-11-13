@@ -29,7 +29,7 @@ public class InvoiceController {
     public ResponseMessage responseMessage;
 
     @PostMapping("/mail-invoice")
-    public ResponseEntity<?> sendInvoice(@RequestBody UserInfo userInfo){
+    public ResponseEntity<?> sendInvoice(@RequestBody UserInfo[] userInfo){
         try {
             return emailService.sendEmail(userInfo);
         } catch (MessagingException | IOException | TemplateException e) {
