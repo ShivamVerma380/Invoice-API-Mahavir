@@ -2,6 +2,9 @@ package mahavir.invoice.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -24,12 +27,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
@@ -57,7 +62,16 @@ public class PdfService {
         footer.setBorderWidthBottom(0);
         document.setFooter(footer);
 
+
         document.open();
+
+        try {
+            Image img = Image.getInstance(new URL("https://i.ibb.co/XLQJ6vd/Screenshot-2022-11-13-135108.png"));
+            img.scaleToFit(483, 100);
+            document.add(img);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD,20,Font.BOLD);
 
@@ -70,6 +84,14 @@ public class PdfService {
         Paragraph para = new Paragraph(content,paraFont);
         para.add(new Chunk("Added After"));
         document.add(para);
+
+        try {
+            Image img = Image.getInstance(new URL("https://i.ibb.co/WymynFj/Screenshot-2022-11-13-150654.png"));
+            img.scaleToFit(483, 100);
+            document.add(img);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 
 
         document.close();
@@ -89,7 +111,7 @@ public class PdfService {
         int smtpPort = 465; //replace this with a valid port
 
         String sender = "edatamahavir@gmail.com"; //replace this with a valid sender email address
-        String recipient = "shivamvermasv380@gmail.com"; //replace this with a valid recipient email address
+        String recipient = "omkar.22010490@viit.ac.in"; //replace this with a valid recipient email address
         String content = "Dear Customer,\nThank you for shopping with Mahavir Electronics."; //this will be the text of the email
         String subject = "Mahavir Invoice API"; //this will be the subject of the email
 
