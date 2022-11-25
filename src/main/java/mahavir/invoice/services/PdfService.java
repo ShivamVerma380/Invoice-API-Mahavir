@@ -21,6 +21,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.swing.plaf.ColorUIResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.lowagie.text.BadElementException;
+import com.lowagie.text.Cell;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -37,14 +39,17 @@ import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
+
+import mahavir.invoice.model.UserInfo;
 
 @Component
 public class PdfService {
     
     private Logger logger = LoggerFactory.getLogger(PdfService.class);
 
-    public ByteArrayInputStream createPdf(){
+    public ByteArrayInputStream createPdf(UserInfo userInfo){
 
         logger.info("Create pdf started...");
 
@@ -73,17 +78,167 @@ public class PdfService {
             e.printStackTrace();
         }
 
-        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD,20,Font.BOLD);
+        // Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD,20,Font.BOLD);
 
-        Paragraph titlePara = new Paragraph(title,titleFont);
-        titlePara.setAlignment(Element.ALIGN_CENTER);
-        document.add(titlePara);
+        // Paragraph titlePara = new Paragraph(title,titleFont);
+        // titlePara.setAlignment(Element.ALIGN_CENTER);
+        // document.add(titlePara);
 
-        Font paraFont = FontFactory.getFont(FontFactory.HELVETICA,18,Font.NORMAL);
+        // Font paraFont = FontFactory.getFont(FontFactory.HELVETICA,18,Font.NORMAL);
 
-        Paragraph para = new Paragraph(content,paraFont);
-        para.add(new Chunk("Added After"));
-        document.add(para);
+        // Paragraph para = new Paragraph(content,paraFont);
+        // para.add(new Chunk("Added After"));
+        // document.add(para);
+
+        Font titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,6,Font.BOLD);
+        Font bodyFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,6);
+        Table table = new Table(3);
+        // table.setBorderWidth(1);
+        // table.setBorderColor(new ColorUIResource(0, 0, 255));
+        table.setPadding(3);
+        table.setCellsFitPage(true);
+        table.setTableFitsPage(true);
+        // table.setWidths(;
+        table.setWidth(92);
+        table.setAlignment(Element.ALIGN_LEFT);
+        // table.setLeft(0);
+        // table.setSpacing(0);
+        // table.setWidth(483);
+
+        Cell cell = new Cell(new Paragraph("INVOICE NUMBER",titleFont));
+        cell.setHeader(true);
+        cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("ORDER DATE",titleFont));
+        cell.setHeader(true);
+        cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("ORDER NUMBER",titleFont));
+        cell.setHeader(true);
+        cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        table.endHeaders();
+
+        cell = new Cell(new Paragraph(userInfo.getInvoiceId(),bodyFont));
+        cell.setColspan(1);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph(userInfo.getOrderDate(),bodyFont));
+        cell.setColspan(1);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph(userInfo.getOrderNumber(),bodyFont));
+        cell.setColspan(1);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("Bill To:\n"+userInfo.getBillingAddress()+"\n"+userInfo.getBillingCity()+"-"+userInfo.getBillingPincode()+"\n"+userInfo.getBillingState(),bodyFont));
+        table.addCell(cell);
+        
+        cell = new Cell(new Paragraph("Ship To:\n"+userInfo.getShippingAddress()+"\n"+userInfo.getShippingCity()+"-"+userInfo.getShippingPincode()+"\n"+userInfo.getShippingState(),bodyFont)); 
+        table.addCell(cell);
+
+        document.add(table);
+
+        // document.add(new Paragraph("\n"));
+
+        // titleFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,6,Font.BOLD);
+        // Font bodyFont = FontFactory.getFont(FontFactory.TIMES_ROMAN,6);
+        table = new Table(7);
+        // table.setBorderWidth(1);
+        // table.setBorderColor(new ColorUIResource(0, 0, 255));
+        table.setPadding(3);
+        table.setCellsFitPage(true);
+        table.setTableFitsPage(true);
+        // table.setWidths(;
+        table.setWidth(92);
+        table.setAlignment(Element.ALIGN_LEFT);
+
+        float[] widths = {1,3,2,1,1,2,1};
+        table.setWidths(widths);
+
+        cell = new Cell(new Paragraph("SR.No.",titleFont));
+        cell.setHeader(true);
+        // cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("PRODUCTS DETAILS",titleFont));
+        cell.setHeader(true);
+        // cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("HSN Code",titleFont));
+        cell.setHeader(true);
+        // cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("GST%",titleFont));
+        cell.setHeader(true);
+        // cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("QTY",titleFont));
+        cell.setHeader(true);
+        // cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("RATE",titleFont));
+        cell.setHeader(true);
+        // cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        cell = new Cell(new Paragraph("AMOUNT",titleFont));
+        cell.setHeader(true);
+        // cell.setColspan(1);
+        cell.setBackgroundColor(ColorUIResource.GRAY);
+        table.addCell(cell);
+
+        table.endHeaders();
+
+        for(int i=0;i<userInfo.getProducts().size();i++){
+            cell = new Cell(new Paragraph(String.valueOf(i+1),bodyFont));
+            // cell.setColspan(1);
+            table.addCell(cell);
+
+            String str = userInfo.getProducts().get(i).getName()+"\n"+"Serial Nos:"+userInfo.getProducts().get(i).getSerialNos()+"\n"+"Sales Person:"+userInfo.getProducts().get(i).getSalesPerson()+"\n"+"Delivery Type:"+userInfo.getProducts().get(i).getDeliveryType()+"\n"+"Transporter Name:"+userInfo.getProducts().get(i).getTransporterName()+"\n"+"Mobile Number:"+userInfo.getProducts().get(i).getMobileNumber();
+
+            cell = new Cell(new Paragraph(str,bodyFont));
+            // cell.setColspan(1);
+            table.addCell(cell);
+
+            cell = new Cell(new Paragraph(userInfo.getProducts().get(i).getHsnCode(),bodyFont));
+            // cell.setColspan(1);
+            table.addCell(cell);
+
+            cell = new Cell(new Paragraph(userInfo.getProducts().get(i).getGst(),bodyFont));
+            // cell.setColspan(1);
+            table.addCell(cell);
+
+            cell = new Cell(new Paragraph(userInfo.getProducts().get(i).getQuantity(),bodyFont));
+            // cell.setColspan(1);
+            table.addCell(cell);
+
+            cell = new Cell(new Paragraph(userInfo.getProducts().get(i).getRate(),bodyFont));
+            // cell.setColspan(1);
+            table.addCell(cell);
+
+            cell = new Cell(new Paragraph(userInfo.getProducts().get(i).getAmount(),bodyFont));
+            // cell.setColspan(1);
+            table.addCell(cell);
+        }
+
+        document.add(table);
 
         try {
             Image img = Image.getInstance(new URL("https://i.ibb.co/WymynFj/Screenshot-2022-11-13-150654.png"));
@@ -96,7 +251,7 @@ public class PdfService {
 
         document.close();
 
-        sendEmail(outputStream.toByteArray());
+        sendEmail(outputStream.toByteArray(),userInfo);
 
 
         logger.info("Create pdf ended...");
@@ -106,12 +261,12 @@ public class PdfService {
 
     }
 
-    public void sendEmail(byte []arr){
+    public void sendEmail(byte []arr,UserInfo userInfo){
         String smtpHost = "smtp.gmail.com"; //replace this with a valid host
         int smtpPort = 465; //replace this with a valid port
 
         String sender = "edatamahavir@gmail.com"; //replace this with a valid sender email address
-        String recipient = "omkar.22010490@viit.ac.in"; //replace this with a valid recipient email address
+        String recipient = userInfo.getEmail(); //replace this with a valid recipient email address
         String content = "Dear Customer,\nThank you for shopping with Mahavir Electronics."; //this will be the text of the email
         String subject = "Mahavir Invoice API"; //this will be the subject of the email
 
@@ -137,7 +292,8 @@ public class PdfService {
         MimeBodyPart pdfBodyPart = new MimeBodyPart();
         try {
             pdfBodyPart.setDataHandler(dataSource);
-            pdfBodyPart.setFileName("test.pdf");
+            String str = "Invoice-"+userInfo.getName()+".pdf";
+            pdfBodyPart.setFileName(str);
         } catch (MessagingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

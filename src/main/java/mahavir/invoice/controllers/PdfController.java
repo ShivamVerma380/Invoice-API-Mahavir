@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import mahavir.invoice.model.UserInfo;
 import mahavir.invoice.services.PdfService;
 
 @RestController
@@ -18,8 +20,8 @@ public class PdfController {
     private PdfService pdfService;
     
     @PostMapping("/pdf/generate")
-    public ResponseEntity<InputStreamResource> createPdf(){
-        ByteArrayInputStream pdf =  pdfService.createPdf();
+    public ResponseEntity<InputStreamResource> createPdf(@RequestBody UserInfo userInfo){
+        ByteArrayInputStream pdf =  pdfService.createPdf(userInfo);
         
 
         HttpHeaders httpHeaders = new HttpHeaders();
