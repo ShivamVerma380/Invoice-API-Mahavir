@@ -241,7 +241,7 @@ public class PdfService {
         document.add(table);
 
         try {
-            Image img = Image.getInstance(new URL("https://i.ibb.co/WymynFj/Screenshot-2022-11-13-150654.png"));
+            Image img = Image.getInstance(new URL("https://i.ibb.co/fYjy7cK/footer.png"));
             img.scaleToFit(483, 100);
             document.add(img);
         } catch(Exception e){
